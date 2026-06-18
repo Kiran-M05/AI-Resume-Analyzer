@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Resume Analyzer // Cyber Core Engine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Ambient background mesh matrix patterns -->
+    <div class="cyber-grid-overlay"></div>
+    <div class="ambient-glow-orb-1"></div>
+    <div class="ambient-glow-orb-2"></div>
+
+    <div class="container">
+        <!-- Sci-Fi HUD Application Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="cyber-pulse-node"></span>
+                <h1>CORE // RESUME ANALYZER</h1>
+            </div>
+            <p class="subtitle">Neural Network parsing pipeline vs applicant tracking rulesets. [SYSTEM: ONLINE]</p>
+            
+            <nav class="nav-bar">
+                <a href="/" class="nav-btn active"><span class="btn-glitch">🔮 PARSER_</span></a>
+                <a href="/history.html" class="nav-btn">📜 LOG_HISTORY</a>
+                <a href="/dashboard.html" class="nav-btn">📊 ANALYTIC_STATS</a>
+            </nav>
+        </header>
+
+        <!-- Master Split Workspace Control Grid -->
+        <main class="grid-layout">
+            
+            <!-- Left Command Vector Terminal Column -->
+            <form id="uploadForm" enctype="multipart/form-data" class="control-panel-form">
+                
+                <div class="form-group">
+                    <label class="section-label">[DATAFEED: INITIALIZE RESUME STREAM]</label>
+                    <div class="upload-dropzone">
+                        <input type="file" id="resume" accept=".pdf" required>
+                        <div class="dropzone-content">
+                            <span class="upload-icon">⚡</span>
+                            <span class="dropzone-text">FEED TARGET PDF STREAM TO STREAM BUFFER</span>
+                            <span class="file-limit">RESTRICTION BOUND: MAX 5MB SECURE FORMAT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="jobDescription" class="section-label">[COMPARE_CRITERIA: JOB COMPLIANCE MATRIX]</label>
+                    <div class="textarea-wrapper">
+                        <textarea 
+                            id="jobDescription" 
+                            placeholder="Paste active target tracking parameters here to establish vector matching constraints..."
+                        ></textarea>
+                        <div class="cyber-corner tl"></div><div class="cyber-corner tr"></div>
+                        <div class="cyber-corner bl"></div><div class="cyber-corner br"></div>
+                    </div>
+                    <small id="charCounter" style="color: var(--accent-cyan); font-size: 11px; margin-top: 4px; font-family: monospace; letter-spacing: 1px;">
+                        [CHARACTERS: 0000]
+                    </small>
+                </div>
+
+                <button type="submit" class="primary-submit-btn">
+                    <span class="btn-text">EXECUTE PIPELINE PARSE</span>
+                    <span class="arrow-icon">//</span>
+                </button>
+            </form>
+
+            <!-- Right Visual Output Dashboard Display Terminal -->
+            <section id="result" class="results-display-area">
+                <div class="empty-state-placeholder">
+                    <div class="radar-scanner">
+                        <div class="radar-sweep"></div>
+                        <div class="empty-icon">⌘</div>
+                    </div>
+                    <h4>AWAITING PIPELINE TRIGGER</h4>
+                    <p>Load local text nodes and deploy calculation array sequences above.</p>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Connect instantaneous live reactive counter loop monitoring
+        document.getElementById("jobDescription").addEventListener("input", (e) => {
+            const padCount = String(e.target.value.length).padStart(4, '0');
+            document.getElementById("charCounter").innerText = `[CHARACTERS: ${padCount}]`;
+        });
+    </script>
+</body>
+</html>
