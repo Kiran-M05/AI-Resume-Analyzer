@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
     res.send('AI Resume Analyzer Running');
 });
 
-app.post('/upload', upload.single('resume'), (req, res) => {
+app.post('/analyze', upload.single('resume'), (req, res) => {
     let text = "";
 
     new PdfReader().parseFileItems(req.file.path, (err, item) => {
