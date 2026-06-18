@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const resultBox = document.getElementById("result");
 
     // Toggle this to false when your backend server route is live and ready
-    const USE_LOCAL_SIMULATION = true; 
+    const USE_LOCAL_SIMULATION = false; 
 
     // File Dropzone Micro-interactions
     const dropzone = document.querySelector(".upload-dropzone");
