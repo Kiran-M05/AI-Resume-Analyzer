@@ -4,59 +4,216 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Resume Analyzer // Matrix Edition</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Chart.js Engine Source Link -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- Core Theme Settings --- */
+        body {
+            background-color: #020813;
+            color: #ffffff;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #00f2fe;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            color: #00f2fe;
+            margin: 0;
+            font-size: 2.5rem;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            letter-spacing: 3px;
+        }
+
+        /* --- Layout Grid Split --- */
+        .workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* --- Panels --- */
+        .panel-header {
+            background: rgba(0, 242, 254, 0.1);
+            color: #00f2fe;
+            padding: 10px 15px;
+            font-weight: bold;
+            border-left: 4px solid #00f2fe;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .input-box {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            color: #4facfe;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+        }
+
+        input[type="file"] {
+            background: #0a1326;
+            border: 1px dashed #4facfe;
+            padding: 15px;
+            width: 95%;
+            color: #fff;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        textarea {
+            background: #0a1326;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 100%;
+            padding: 15px;
+            color: #fff;
+            font-family: inherit;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #00f2fe;
+        }
+
+        .btn-primary {
+            background: transparent;
+            border: 1px solid #00f2fe;
+            color: #00f2fe;
+            padding: 15px 30px;
+            width: 100%;
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .btn-primary:hover {
+            background: rgba(0, 242, 254, 0.1);
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+
+        /* --- Dashboard Panel Stats --- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #0a1326;
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            padding: 15px;
+            text-align: center;
+            border-radius: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            margin: 0 0 5px 0;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00f2fe;
+        }
+
+        .results-output {
+            margin-bottom: 40px;
+            min-height: 100px;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- This matches your original beautiful layout container from image_56b6a3.png -->
     <div class="container">
-        
-        <div class="left-panel">
-            <div class="panel-header">[DATAFEED: INITIALIZE RESUME STREAM]</div>
-            <div class="upload-box">
-                <form id="uploadForm">
-                    <div class="file-input-wrapper">
-                        <div class="lightning-icon">⚡</div>
-                        <input type="file" id="resumeInput" name="resume" accept=".pdf" required />
-                        <div class="upload-text">READY_STREAM: CHOOSE RESUME PDF</div>
-                        <div class="restriction-text">RESTRICTION BOUND: MAX 5MB SECURE FORMAT</div>
-                    </div>
+        <header>
+            <h1>AI RESUME ANALYZER</h1>
+            <div class="subtitle">AUTOMATED ATS COMPLIANCE MATRIX</div>
+        </header>
 
-                    <div class="panel-header" style="margin-top: 30px; padding-left: 0;">[Enter Your Job Description]</div>
-                    <textarea id="jdInput" placeholder="Paste active target tracking parameters here to establish vector matching constraints..."></textarea>
+        <div class="workspace">
+            <div class="left-panel">
+                <div class="panel-header">[DATAFEED: INITIALIZE RESUME STREAM]</div>
+                <form id="uploadForm">
+                    <div class="input-box">
+                        <label for="resumeInput">Upload Resume (PDF Only)</label>
+                        <input type="file" id="resumeInput" name="resume" accept=".pdf" required />
+                    </div>
                     
-                    <button type="submit" class="submit-btn">EXECUTE PIPELINE PARSE //</button>
+                    <div class="input-box">
+                        <label for="jdInput">Target Job Description</label>
+                        <textarea id="jdInput" placeholder="Paste target requirements compliance matrix here..." rows="8"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">EXECUTE PIPELINE PARSE //</button>
                 </form>
             </div>
-        </div>
 
-        <div class="right-panel">
-            <!-- This is where the Gemini AI output matrix will safely display -->
-            <div id="resultsContainer">
-                <!-- Default landing state when no file is processing yet -->
-                <div class="panel-header">[OUTPUT_MATRIX: SYSTEM_READY]</div>
-                <p style="color: #666; font-family: monospace; padding: 20px;">Awaiting data stream compression parse initiation...</p>
-            </div>
-
-            <!-- This is where the system metrics dashboard and analytics live -->
-            <div class="analytics-section" style="margin-top: 40px;">
-                <div class="panel-header">[SYSTEM_METRICS_DASHBOARD]</div>
-                <div class="stats-display" style="display: flex; gap: 20px; font-family: monospace; color: #fff; margin: 15px 0;">
-                    <div>Total Uploads: <span id="totalResumes" style="color: #00f2fe;">0</span></div>
-                    <div>Average ATS Rating: <span id="averageScore" style="color: #00f2fe;">0%</span></div>
-                    <div>Peak Rating: <span id="highestScore" style="color: #00f2fe;">0%</span></div>
+            <div class="right-panel">
+                <div class="panel-header">[OUTPUT_MATRIX: ANALYSIS MATRIX]</div>
+                <div id="resultsContainer" class="results-output">
+                    <p style="color: #666; margin: 0;">Awaiting pipeline parser generation execution...</p>
                 </div>
-                <div class="chart-wrapper" style="width: 100%; max-width: 450px; margin: 0 auto;">
+
+                <div class="panel-header">[SYSTEM_METRICS_DASHBOARD]</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p class="stat-label">Total Uploads</p>
+                        <span id="totalResumes" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Avg ATS Rating</p>
+                        <span id="averageScore" class="stat-value">0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Peak Rating</p>
+                        <span id="highestScore" class="stat-value">0%</span>
+                    </div>
+                </div>
+                
+                <div style="width: 100%; max-width: 450px; margin: 0 auto;">
                     <canvas id="metricsChart"></canvas>
                 </div>
             </div>
         </div>
-
     </div>
 
-    <!-- Your Main Script Engine -->
     <script src="script.js"></script>
 </body>
 </html>
