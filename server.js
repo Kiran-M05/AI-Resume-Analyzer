@@ -43,99 +43,100 @@ app.get('/', (req, res) => {
     res.send('AI Resume Analyzer Running');
 });
 
-// HELPER FUNCTION: Wraps PdfReader inside a clean Promise to extract text sequentially
-// HELPER FUNCTION: Wraps PdfReader inside a clean Promise to extract text sequentially
-function extractPdfText(filePath) {
-    return new Promise((resolve, reject) => {
-        let extractedText = "";
-        new PdfReader().parseFileItems(filePath, (err, item) => {
-            if (err) {
-                reject(err);
-            } else if (!item) {
-                // End of file reached completely, return the text block
-                resolve(extractedText);
-            } else if (item.text) {
-                extractedText += item.text + " ";
+app.post('/analyze', upload.single('resume'), (req, res) => {
+    let text = "";
+
+    new PdfReader().parseFileItems(req.file.path, (err, item) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "PDF Read Error" });
+        }
+
+        if (!item) {
+            const skills = ["Java", "Python", "SQL", "HTML", "CSS", "JavaScript", "React", "Node.js", "Machine Learning", "AI"];
+            const foundSkills = skills.filter(skill => text.toLowerCase().includes(skill.toLowerCase()));
+            const score = Math.round((foundSkills.length / skills.length) * 100);
+            
+            const jd = req.body.jobDescription || "";
+            const jdSkills = skills.filter(skill => jd.toLowerCase().includes(skill.toLowerCase()));
+            const matchedSkills = foundSkills.filter(skill => jdSkills.includes(skill));
+            const matchScore = jdSkills.length > 0 ? Math.round((matchedSkills.length / jdSkills.length) * 100) : 0;
+            const missingSkills = jdSkills.filter(skill => !foundSkills.includes(skill));
+
+            let suggestions = [];
+            if (score < 40) suggestions.push("Add more technical skills to improve your resume.");
+            if (!foundSkills.includes("SQL")) suggestions.push("Consider learning SQL.");
+            if (!foundSkills.includes("React")) suggestions.push("Add React projects to strengthen your profile.");
+            if (!foundSkills.includes("Node.js")) suggestions.push("Include backend development experience.");
+            if (missingSkills.length > 0) suggestions.push(`Missing skills for this job: ${missingSkills.join(", ")}`);
+
+            // --- DATABASE LOGIC OR RAM FALLBACK ---
+            if (dbConnected) {
+                db.query(
+                    `INSERT INTO resumes (filename, score, skills) VALUES(?,?,?)`,
+                    [req.file.originalname, score, foundSkills.join(", ")]
+                );
+            } else {
+                // If cloud DB is offline, save to server memory array
+                localMemoryStorage.push({
+                    id: localMemoryStorage.length + 1,
+                    filename: req.file.originalname,
+                    score: score,
+                    skills: foundSkills.join(", ")
+                });
             }
-        });
-    });
-}
 
-// RESTRICTION BOUND PARSE PIPELINE
-app.post('/analyze', upload.single('resume'), async (req, res) => {
-    if (!req.file) {
-        return res.status(400).json({ message: "No resume file uploaded" });
-    }
+            console.log("Skills Found:", foundSkills);
+            console.log("Score:", score);
 
-    try {
-        // 1. Force the thread to wait completely for text aggregation
-        const text = await extractPdfText(req.file.path);
-        const jd = req.body.jobDescription || "General Software Engineering Position";
-
-        // 2. Construct the system context prompt
-        const promptText = `
-        You are an advanced Applicant Tracking System (ATS) optimization matrix engine.
-        Analyze the following Resume Text against the provided Job Description.
-        
-        [JOB DESCRIPTION]:
-        ${jd}
-
-        [RESUME TEXT]:
-        ${text}
-
-        Respond ONLY with a valid, clean JSON object matching this structural blueprint (no markdown formatting code blocks, no backticks, just raw JSON):
-        {
-            "score": 75,
-            "matchScore": 80,
-            "skills": ["Java", "React", "Node.js"],
-            "missingSkills": ["Docker"],
-            "suggestions": ["Add depth to your React project descriptions.", "Detail containerization constraints."]
-        }
-        `;
-
-        // 3. Request analysis stream from gemini-2.5-flash
-        const aiResponse = await ai.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: promptText,
-        });
-
-        let cleanJsonString = aiResponse.text.trim();
-        
-        // Strip markdown wrappers if the model appends them
-        if (cleanJsonString.startsWith("```")) {
-            cleanJsonString = cleanJsonString.replace(/```json|```/g, "").trim();
-        }
-
-        const aiAnalysis = JSON.parse(cleanJsonString);
-
-        // 4. Persistence distribution layer routing
-        if (dbConnected) {
-            db.query(
-                `INSERT INTO resumes (filename, score, skills) VALUES(?,?,?)`,
-                [req.file.originalname, aiAnalysis.score, aiAnalysis.skills.join(", ")]
-            );
-        } else {
-            localMemoryStorage.push({
-                id: localMemoryStorage.length + 1,
-                filename: req.file.originalname,
-                score: aiAnalysis.score,
-                skills: aiAnalysis.skills.join(", ")
+            res.json({
+                message: "Resume uploaded successfully",
+                score,
+                matchScore,
+                skills: foundSkills,
+                missingSkills,
+                suggestions,
+                text: text.substring(0, 500)
             });
+
+        } else if (item.text) {
+            text += item.text + " ";
         }
+    });
+});
 
-        // 5. Fire clean dashboard payload down to the browser UI script hooks
-        return res.json({
-            message: "Resume uploaded successfully",
-            score: aiAnalysis.score,
-            matchScore: aiAnalysis.matchScore,
-            skills: aiAnalysis.skills,
-            missingSkills: aiAnalysis.missingSkills,
-            suggestions: aiAnalysis.suggestions,
-            text: text.substring(0, 500)
+app.get('/history', (req, res) => {
+    if (dbConnected) {
+        db.query('SELECT * FROM resumes ORDER BY id DESC', (err, result) => {
+            if (err) return res.status(500).json(err);
+            res.json(result);
         });
-
-    } catch (error) {
-        console.error("AI Generation Matrix Fault:", error);
-        return res.status(500).json({ message: "AI Analysis Pipeline Aborted" });
+    } else {
+        // Return memory history reversed (newest first)
+        res.json([...localMemoryStorage].reverse());
     }
+});
+
+app.get('/dashboard', (req, res) => {
+    if (dbConnected) {
+        db.query(
+            `SELECT COUNT(*) AS totalResumes, AVG(score) AS averageScore, MAX(score) AS highestScore FROM resumes`,
+            (err, result) => {
+                if (err) return res.status(500).json(err);
+                res.json(result[0]);
+            }
+        );
+    } else {
+        // Calculate dashboard stats from memory array
+        const totalResumes = localMemoryStorage.length;
+        const scores = localMemoryStorage.map(r => r.score);
+        const averageScore = totalResumes > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / totalResumes) : 0;
+        const highestScore = totalResumes > 0 ? Math.max(...scores) : 0;
+
+        res.json({ totalResumes, averageScore, highestScore });
+    }
+});
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running dynamically on port ${PORT}`);
 });
