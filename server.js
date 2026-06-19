@@ -3,7 +3,7 @@ const { PdfReader } = require("pdfreader");
 const express = require('express');
 const mysql = require('mysql2');
 const { GoogleGenAI } = require('@google/genai'); // Imported the updated Gen AI SDK
-
+const path = require('path'); 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(express.json());
@@ -39,8 +39,12 @@ db.connect((err) => {
 
 const upload = multer({ dest: 'uploads/' });
 
+// Serve the main UI matrix dashboard
+// Add this near the top of your app.js with the other requires
+
+// Replace the old app.get('/', ...) block with this:
 app.get('/', (req, res) => {
-    res.send('AI Resume Analyzer Running');
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.post('/analyze', upload.single('resume'), (req, res) => {
