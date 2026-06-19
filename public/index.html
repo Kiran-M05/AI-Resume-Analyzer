@@ -10,57 +10,50 @@
 </head>
 <body>
 
+    <!-- This matches your original beautiful layout container from image_56b6a3.png -->
     <div class="container">
-        <header>
-            <h1>AI RESUME ANALYZER</h1>
-            <p class="subtitle">AUTOMATED ATS COMPLIANCE MATRIX</p>
-        </header>
-
-        <main>
-            <!-- Central Workspace Parser Zone -->
-            <section class="upload-section">
+        
+        <div class="left-panel">
+            <div class="panel-header">[DATAFEED: INITIALIZE RESUME STREAM]</div>
+            <div class="upload-box">
                 <form id="uploadForm">
-                    <div class="file-upload-box">
-                        <label for="resumeInput">UPLOAD RESUME (PDF ONLY)</label>
+                    <div class="file-input-wrapper">
+                        <div class="lightning-icon">⚡</div>
                         <input type="file" id="resumeInput" name="resume" accept=".pdf" required />
+                        <div class="upload-text">READY_STREAM: CHOOSE RESUME PDF</div>
+                        <div class="restriction-text">RESTRICTION BOUND: MAX 5MB SECURE FORMAT</div>
                     </div>
+
+                    <div class="panel-header" style="margin-top: 30px; padding-left: 0;">[Enter Your Job Description]</div>
+                    <textarea id="jdInput" placeholder="Paste active target tracking parameters here to establish vector matching constraints..."></textarea>
                     
-                    <div class="input-box">
-                        <label for="jdInput">TARGET JOB DESCRIPTION</label>
-                        <textarea id="jdInput" placeholder="Paste target requirements compliance matrix here..." rows="6"></textarea>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">EXECUTE PIPELINE PARSE //</button>
+                    <button type="submit" class="submit-btn">EXECUTE PIPELINE PARSE //</button>
                 </form>
-            </section>
+            </div>
+        </div>
 
-            <!-- Container where Gemini AI results will print out -->
-            <section id="resultsContainer" class="results-section"></section>
+        <div class="right-panel">
+            <!-- This is where the Gemini AI output matrix will safely display -->
+            <div id="resultsContainer">
+                <!-- Default landing state when no file is processing yet -->
+                <div class="panel-header">[OUTPUT_MATRIX: SYSTEM_READY]</div>
+                <p style="color: #666; font-family: monospace; padding: 20px;">Awaiting data stream compression parse initiation...</p>
+            </div>
 
-            <!-- Analytics Dashboard Viewport Area -->
-            <section id="analyticsTab" class="analytics-section">
-                <h2>[SYSTEM_METRICS_DASHBOARD]</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <p class="stat-label">Total Uploads</p>
-                        <span id="totalResumes" class="stat-value">0</span>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-label">Average ATS Rating</p>
-                        <span id="averageScore" class="stat-value">0%</span>
-                    </div>
-                    <div class="stat-card">
-                        <p class="stat-label">Peak Rating</p>
-                        <span id="highestScore" class="stat-value">0%</span>
-                    </div>
+            <!-- This is where the system metrics dashboard and analytics live -->
+            <div class="analytics-section" style="margin-top: 40px;">
+                <div class="panel-header">[SYSTEM_METRICS_DASHBOARD]</div>
+                <div class="stats-display" style="display: flex; gap: 20px; font-family: monospace; color: #fff; margin: 15px 0;">
+                    <div>Total Uploads: <span id="totalResumes" style="color: #00f2fe;">0</span></div>
+                    <div>Average ATS Rating: <span id="averageScore" style="color: #00f2fe;">0%</span></div>
+                    <div>Peak Rating: <span id="highestScore" style="color: #00f2fe;">0%</span></div>
                 </div>
-                
-                <!-- Glowing Canvas Element for ChartJS Graphic Rendering -->
-                <div class="chart-container" style="position: relative; width: 100%; max-width: 500px; margin: 30px auto;">
+                <div class="chart-wrapper" style="width: 100%; max-width: 450px; margin: 0 auto;">
                     <canvas id="metricsChart"></canvas>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
+
     </div>
 
     <!-- Your Main Script Engine -->
