@@ -10,9 +10,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// Initialize Gemini AI (Falls back to empty string if not deployed yet)
-// Keep it clean. Do not hardcode your raw secret string here!
-const aiApiKey = process.env.GEMINI_API_KEY;
+// Initialize Gemini AI securely using the correct environment property
+const aiApiKey = process.env.GEMINI_API_KEY || "YOUR_PASTED_API_KEY_HERE";
 const ai = new GoogleGenAI({ apiKey: aiApiKey });
 
 let localMemoryStorage = [];
