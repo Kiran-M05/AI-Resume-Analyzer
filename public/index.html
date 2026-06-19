@@ -3,93 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Resume Analyzer // Cyber Core Engine</title>
+    <title>AI Resume Analyzer // Matrix Edition</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Chart.js Engine Source Link -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <!-- Ambient background mesh matrix patterns -->
-    <div class="cyber-grid-overlay"></div>
-    <div class="ambient-glow-orb-1"></div>
-    <div class="ambient-glow-orb-2"></div>
-
     <div class="container">
-        <!-- Sci-Fi HUD Application Header -->
-        <header class="app-header">
-            <div class="logo-area">
-                <span class="cyber-pulse-node"></span>
-                <h1>CORE // RESUME ANALYZER</h1>
-            </div>
-            <p class="subtitle">Neural Network parsing pipeline vs applicant tracking rulesets. [SYSTEM: ONLINE]</p>
-            
-            <nav class="nav-bar">
-                <a href="/" class="nav-btn active"><span class="btn-glitch">🔮 PARSER_</span></a>
-                <a href="/history.html" class="nav-btn">📜 LOG_HISTORY</a>
-                <a href="/dashboard.html" class="nav-btn">📊 ANALYTIC_STATS</a>
-            </nav>
+        <header>
+            <h1>AI RESUME ANALYZER</h1>
+            <p class="subtitle">AUTOMATED ATS COMPLIANCE MATRIX</p>
         </header>
 
-        <!-- Master Split Workspace Control Grid -->
-        <main class="grid-layout">
-            
-            <!-- Left Command Vector Terminal Column -->
-            <form id="uploadForm" enctype="multipart/form-data" class="control-panel-form">
+        <main>
+            <!-- Central Workspace Parser Zone -->
+            <section class="upload-section">
+                <form id="uploadForm">
+                    <div class="file-upload-box">
+                        <label for="resumeInput">UPLOAD RESUME (PDF ONLY)</label>
+                        <input type="file" id="resumeInput" name="resume" accept=".pdf" required />
+                    </div>
+                    
+                    <div class="input-box">
+                        <label for="jdInput">TARGET JOB DESCRIPTION</label>
+                        <textarea id="jdInput" placeholder="Paste target requirements compliance matrix here..." rows="6"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary">EXECUTE PIPELINE PARSE //</button>
+                </form>
+            </section>
+
+            <!-- Container where Gemini AI results will print out -->
+            <section id="resultsContainer" class="results-section"></section>
+
+            <!-- Analytics Dashboard Viewport Area -->
+            <section id="analyticsTab" class="analytics-section">
+                <h2>[SYSTEM_METRICS_DASHBOARD]</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <p class="stat-label">Total Uploads</p>
+                        <span id="totalResumes" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Average ATS Rating</p>
+                        <span id="averageScore" class="stat-value">0%</span>
+                    </div>
+                    <div class="stat-card">
+                        <p class="stat-label">Peak Rating</p>
+                        <span id="highestScore" class="stat-value">0%</span>
+                    </div>
+                </div>
                 
-                <div class="form-group">
-                    <label class="section-label">[DATAFEED: INITIALIZE RESUME STREAM]</label>
-                    <div class="upload-dropzone">
-                        <input type="file" id="resume" accept=".pdf" required>
-                        <div class="dropzone-content">
-                            <span class="upload-icon">⚡</span>
-                            <span class="dropzone-text">Upload Your Resume to Analyze</span>
-                            <span class="file-limit">RESTRICTION BOUND: MAX 5MB SECURE FORMAT</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="jobDescription" class="section-label">[Enter Your Job Description]</label>
-                    <div class="textarea-wrapper">
-                        <textarea 
-                            id="jobDescription" 
-                            placeholder="Paste active target tracking parameters here to establish vector matching constraints..."
-                        ></textarea>
-                        <div class="cyber-corner tl"></div><div class="cyber-corner tr"></div>
-                        <div class="cyber-corner bl"></div><div class="cyber-corner br"></div>
-                    </div>
-                    <small id="charCounter" style="color: var(--accent-cyan); font-size: 11px; margin-top: 4px; font-family: monospace; letter-spacing: 1px;">
-                        [CHARACTERS: 0000]
-                    </small>
-                </div>
-
-                <button type="submit" class="primary-submit-btn">
-                    <span class="btn-text">EXECUTE PIPELINE PARSE</span>
-                    <span class="arrow-icon">//</span>
-                </button>
-            </form>
-
-            <!-- Right Visual Output Dashboard Display Terminal -->
-            <section id="result" class="results-display-area">
-                <div class="empty-state-placeholder">
-                    <div class="radar-scanner">
-                        <div class="radar-sweep"></div>
-                        <div class="empty-icon">⌘</div>
-                    </div>
-                    <h4>AWAITING PIPELINE TRIGGER</h4>
-                    <p>Load local text nodes and deploy calculation array sequences above.</p>
+                <!-- Glowing Canvas Element for ChartJS Graphic Rendering -->
+                <div class="chart-container" style="position: relative; width: 100%; max-width: 500px; margin: 30px auto;">
+                    <canvas id="metricsChart"></canvas>
                 </div>
             </section>
-            
         </main>
     </div>
 
+    <!-- Your Main Script Engine -->
     <script src="script.js"></script>
-    <script>
-        // Connect instantaneous live reactive counter loop monitoring
-        document.getElementById("jobDescription").addEventListener("input", (e) => {
-            const padCount = String(e.target.value.length).padStart(4, '0');
-            document.getElementById("charCounter").innerText = `[CHARACTERS: ${padCount}]`;
-        });
-    </script>
 </body>
 </html>
