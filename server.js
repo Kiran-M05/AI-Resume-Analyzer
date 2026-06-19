@@ -44,6 +44,7 @@ app.get('/', (req, res) => {
 });
 
 // HELPER FUNCTION: Wraps PdfReader inside a clean Promise to extract text sequentially
+// HELPER FUNCTION: Wraps PdfReader inside a clean Promise to extract text sequentially
 function extractPdfText(filePath) {
     return new Promise((resolve, reject) => {
         let extractedText = "";
@@ -51,7 +52,7 @@ function extractPdfText(filePath) {
             if (err) {
                 reject(err);
             } else if (!item) {
-                // End of file reached completely, send text back
+                // End of file reached completely, return the text block
                 resolve(extractedText);
             } else if (item.text) {
                 extractedText += item.text + " ";
@@ -67,11 +68,11 @@ app.post('/analyze', upload.single('resume'), async (req, res) => {
     }
 
     try {
-        // 1. Wait completely for the text extraction stream to finish
+        // 1. Force the thread to wait completely for text aggregation
         const text = await extractPdfText(req.file.path);
         const jd = req.body.jobDescription || "General Software Engineering Position";
 
-        // 2. Construct the clean structural blueprint prompt for Gemini
+        // 2. Construct the system context prompt
         const promptText = `
         You are an advanced Applicant Tracking System (ATS) optimization matrix engine.
         Analyze the following Resume Text against the provided Job Description.
@@ -92,8 +93,7 @@ app.post('/analyze', upload.single('resume'), async (req, res) => {
         }
         `;
 
-        // 3. Request analysis stream from gemini-2.5-flash using the legacy constructor configuration
-        // (If using the newer client structure, adjust this line to match your exact initialization)
+        // 3. Request analysis stream from gemini-2.5-flash
         const aiResponse = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: promptText,
@@ -101,7 +101,7 @@ app.post('/analyze', upload.single('resume'), async (req, res) => {
 
         let cleanJsonString = aiResponse.text.trim();
         
-        // Strip out markdown wrappers if the model appends them automatically
+        // Strip markdown wrappers if the model appends them
         if (cleanJsonString.startsWith("```")) {
             cleanJsonString = cleanJsonString.replace(/```json|```/g, "").trim();
         }
